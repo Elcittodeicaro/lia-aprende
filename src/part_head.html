@@ -259,21 +259,24 @@ button:focus-visible,input:focus-visible{outline:3px solid var(--mates);outline-
 <canvas id="fx" aria-hidden="true"></canvas>
 <div class="wrap">
   <header class="top">
-    <div class="brand"><span class="logo" id="logo" aria-hidden="true"></span><div><h1>Lía</h1><p>Aprende jugando · Primaria</p></div></div>
+    <button class="brand" id="brandBtn" aria-label="Ir al inicio"><span class="logo" id="logo" aria-hidden="true"></span><span class="brand-name">Lía</span></button>
     <div class="hud">
-      <button class="pill lvl" id="hudLvl" aria-label="Ver mi nivel y mis logros"><b id="hudLvlN">Nv. 1</b><span class="mini"><i id="hudXp" style="width:0%"></i></span></button>
-      <span class="pill" title="Monedas" id="hudCoinsBox"></span>
       <span class="pill" title="Días seguidos practicando" id="hudStreakBox"></span>
+      <span class="pill" title="Monedas" id="hudCoinsBox"></span>
+      <button class="pill goal" id="hudGoal" aria-label="Meta diaria"></button>
+      <button class="pill lvl" id="hudLvl" aria-label="Ver mi nivel y mis logros"><b id="hudLvlN">Nv. 1</b><span class="mini"><i id="hudXp" style="width:0%"></i></span></button>
       <button class="pill icon" id="soundBtn"></button>
       <button class="who" id="whoBtn" aria-label="Mi perfil"><span class="avatar" id="avatar">E</span><span id="whoName">Estudiante</span></button>
     </div>
   </header>
 
-  <nav class="nav">
-    <button id="navTemas" aria-pressed="true">Temas</button>
-    <button id="navLogros" aria-pressed="false">Logros</button>
-    <button id="navShop" aria-pressed="false">Tienda</button>
-    <button id="navProg" aria-pressed="false">Progreso</button>
+  <nav class="tabbar" aria-label="Secciones">
+    <button id="navTemas" aria-pressed="true"><span class="ti" data-icon="path"></span><span>Aprender</span></button>
+    <button id="navRetos" aria-pressed="false"><span class="ti" data-icon="bolt"></span><span>Retos</span></button>
+    <button id="navShop" aria-pressed="false"><span class="ti" data-icon="bag"></span><span>Tienda</span></button>
+    <button id="navLogros" aria-pressed="false"><span class="ti" data-icon="trophy"></span><span>Logros</span></button>
+    <button id="navPerfil" aria-pressed="false"><span class="ti" data-icon="user"></span><span>Perfil</span></button>
+    <button id="navProg" aria-pressed="false" hidden>Progreso</button>
   </nav>
 
   <section id="vWelcome" hidden>
@@ -293,17 +296,21 @@ button:focus-visible,input:focus-visible{outline:3px solid var(--mates);outline-
   </section>
 
   <section id="vHome">
+    <div class="today" id="todayCard"></div>
+    <div class="subjects" id="subjects"></div>
+    <div class="path" id="topics"></div>
+  </section>
+
+  <section id="vRetos" hidden>
     <div class="hero"><div class="mascot" id="heroMascot"></div><div class="bubble" id="heroMsg"></div></div>
+    <div class="streakcal" id="streakCal"></div>
     <div class="modes">
       <button class="mode" id="dailyBtn" style="--c:var(--star)"><span class="k">Reto del día</span><b>10 preguntas de todo</b><small id="dailyInfo"></small><span id="dailyChip"></span></button>
       <button class="mode" id="timedBtn" style="--c:var(--flame)"><span class="k">Contrarreloj</span><b>60 segundos de cálculo</b><small id="timedInfo"></small></button>
       <button class="mode" id="failsBtn" style="--c:var(--lengua)"><span class="k">Repasa tus fallos</span><b>Tus errores, otra vez</b><small id="failsInfo"></small></button>
     </div>
     <div class="week" id="weekBox"></div>
-    <div class="label" id="subjLabel">Asignatura</div>
-    <div class="subjects" id="subjects"></div>
     <div id="refuerzo"></div>
-    <div class="topics" id="topics"></div>
   </section>
 
   <section id="vFicha" hidden>
@@ -317,22 +324,39 @@ button:focus-visible,input:focus-visible{outline:3px solid var(--mates);outline-
   </section>
 
   <section id="vQuiz" hidden>
-    <button class="back" id="quizBack">← Salir</button>
-    <div class="sheet" id="quizSheet">
+    <div class="lesson-top">
+      <button class="xbtn" id="quizBack" aria-label="Salir de la partida">✕</button>
+      <div class="bar lbar"><b id="qBar" style="width:0%"></b></div>
+      <span class="combo" id="qCombo" hidden></span>
+    </div>
+    <div class="lesson-body" id="quizSheet">
       <div class="eyebrow" id="quizEyebrow"></div>
-      <div class="qnum"><span id="qCount"></span><span class="combo" id="qCombo" hidden></span><span id="qScore"></span></div>
-      <div class="bar"><b id="qBar" style="width:0%"></b></div>
+      <div class="qnum"><span id="qCount"></span><span id="qScore"></span></div>
       <span class="tag" id="qTag" hidden></span>
-      <div class="question" id="qText"></div>
+      <div class="qrow"><div class="mascot qmascot" id="qMascot"></div><div class="question" id="qText"></div></div>
       <div class="tts-row" id="ttsRow" hidden>
         <button class="btn speak" id="qSpeak"></button>
         <label class="switch"><input type="checkbox" id="ttsAuto"><span>Leer siempre en voz alta</span></label>
       </div>
       <div id="qBody"></div>
+    </div>
+    <div class="lesson-foot" id="lessonFoot">
       <div id="qFb"></div>
-      <div class="row"><button class="btn main" id="qNext" hidden>Siguiente</button></div>
+      <button class="btn3d" id="qCheck" disabled>Comprobar</button>
+      <button class="btn3d" id="qNext" hidden>Continuar</button>
     </div>
   </section>
+
+  <div class="sheet-bg" id="sheetBg" hidden></div>
+  <div class="bsheet" id="nodeSheet" role="dialog" aria-modal="true" hidden></div>
+  <div class="bsheet" id="exitSheet" role="dialog" aria-modal="true" hidden>
+    <div class="mascot sm" id="exitMascot"></div>
+    <h3>¿Seguro que quieres salir?</h3>
+    <p>Si sales ahora, perderás lo que llevas de esta partida.</p>
+    <button class="btn3d" id="exitStay">Seguir jugando</button>
+    <button class="btn-ghost danger" id="exitLeave">Salir</button>
+  </div>
+  <div class="toast" id="toast" role="status" hidden></div>
 
   <section id="vResult" hidden><div class="sheet" id="resBox"></div></section>
   <section id="vLogros" hidden><div class="sheet" id="logrosBox"></div></section>
