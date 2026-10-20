@@ -1,0 +1,19 @@
+{
+  "name": "Lía · Aprende jugando",
+  "short_name": "Lía",
+  "description": "Juego de estudio para Primaria en Andalucía: Lengua, Matemáticas y Conocimiento del Medio de 1º a 6º.",
+  "lang": "es",
+  "start_url": "./",
+  "scope": "./",
+  "display": "standalone",
+  "orientation": "portrait",
+  "background_color": "#F5F8FC",
+  "theme_color": "#0B7A43",
+  "categories": ["education", "kids"],
+  "icons": [
+    { "src": "icons/icon-192.png", "sizes": "192x192", "type": "image/png" },
+    { "src": "icons/icon-512.png", "sizes": "512x512", "type": "image/png" },
+    { "src": "icons/icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "maskable" },
+    { "src": "icons/icon-1024.png", "sizes": "1024x1024", "type": "image/png" }
+  ]
+}

@@ -1,0 +1,15 @@
+# Netlify publica la carpeta "app" tal cual: no hay paso de compilación.
+[build]
+  publish = "app"
+  command = ""
+
+# El archivo offline (sw.js) y la página no se guardan en caché del navegador,
+# así los iPhone reciben cada versión nueva en cuanto se publica.
+[[headers]]
+  for = "/sw.js"
+  [headers.values]
+    Cache-Control = "no-cache"
+[[headers]]
+  for = "/index.html"
+  [headers.values]
+    Cache-Control = "no-cache"
