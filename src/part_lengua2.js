@@ -51,7 +51,7 @@ const NEW_LENGUA={
   ['«Iván se olvidó el bocadillo. Su amiga Sara compartió el suyo con él.» ¿Cómo es Sara?',['generosa','egoísta','perezosa'],0],
   ['«Iván se olvidó el bocadillo. Su amiga Sara compartió el suyo con él.» ¿Qué se olvidó Iván?',['el bocadillo','la mochila','el abrigo'],0],
   ['«En otoño, las hojas del castaño se vuelven marrones y caen.» ¿Cuándo caen las hojas?',['en otoño','en verano','en primavera'],0],
-  ['«El tren salió a las nueve y llegó a Sevilla a las once.» ¿Adónde llegó el tren?',['a Sevilla','a Málaga','a Lucena'],0],
+  ['«El tren salió a las nueve y llegó a Sevilla a las once.» ¿A qué ciudad llegó el tren?',['a Sevilla','a Málaga','a Lucena'],0],
   ['«El tren salió a las nueve y llegó a Sevilla a las once.» ¿Cuántas horas duró el viaje?',['dos','una','tres'],0],
   ['El título de un texto nos dice…',['de qué trata','cuántas páginas tiene','quién lo ha comprado'],0]]),
  T('Tipos de oraciones',['Afirmativas: dicen que algo es así (Hace sol).','Negativas: llevan «no» o «nunca» (No hace sol).','Interrogativas: preguntan (¿Hace sol?). Exclamativas: expresan emoción (¡Qué sol!).'],[

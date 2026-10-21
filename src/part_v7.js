@@ -22,12 +22,17 @@ trueFalse=function(it){if(young())return it;const right=it.o[it.a];const wrongs=
 /* «Sí» siempre antes que «No» */
 const _bs7=buildSession;buildSession=function(t){return _bs7(t).map(it=>{if(it.claim&&it.o[0]!=='Sí, tiene razón'){it.o=['Sí, tiene razón','No, se equivoca'];it.a=1-it.a}return it})};
 /* forma de cada pregunta: lectura, frase para completar o normal */
-function qShape(it){const m=it.q.match(/^«([^»]{12,})»\s*(¿.+)$/);if(m)return {kind:'passage',text:m[1],ask:m[2]};
+function qShape(it){if(!it.claim&&it.o&&/_{3,}/.test(it.q)){const g=it.q.match(/«([^»]*_{3,}[^»]*)»/);const body=g?g[1]:it.q;
+  const pre=g?it.q.slice(0,g.index).trim():'',post=g?it.q.slice(g.index+g[0].length).trim():'';
+  const note=(post.match(/^\(([^)]*)\)$/)||[])[1]||'';const ask=pre||(/^¿/.test(post)&&!/^¿Qu[ée] va\?$/i.test(post)?post:'');
+  const parts=body.split(/_{3,}/);return {kind:'gap',ask:ask||'¿Qué palabra va en el hueco?',note,a:parts[0],b:parts.slice(1).join('___')}}
+ const m=it.q.match(/^«([^»]{12,})»\s*(¿.+)$/);if(m)return {kind:'passage',text:m[1],ask:m[2]};
  if(/…\s*$/.test(it.q)&&!it.claim)return {kind:'blank',stem:it.q.replace(/\s*…\s*$/,'')};return {kind:'plain'}}
 const _rq7=renderQ;
 renderQ=function(){_rq7();const it=cur.items[cur.i];if(!it)return;document.body.toggleAttribute('data-young',young());
  const sh=qShape(it),q=$('qText');
  if(sh.kind==='passage')q.innerHTML=`<div class="passage"><small>Lee el texto</small>${esc(sh.text)}</div>${esc(sh.ask)}`;
+ else if(sh.kind==='gap')q.innerHTML=`${esc(sh.ask)}<div class="passage">${esc(sh.a)}<span class="blank" id="qBlank">&nbsp;</span>${esc(sh.b)}${sh.note?`<small style="margin:6px 0 0">Pista: ${esc(sh.note)}</small>`:''}</div>`;
  else if(sh.kind==='blank')q.innerHTML=`<span class="qhint">Completa la frase</span>${esc(sh.stem)} <span class="blank" id="qBlank">&nbsp;</span>`;
  $('qMascot').hidden=!!it.claim;
  if(it.claim){
@@ -40,6 +45,7 @@ readQuestion=function(){const it=cur.items&&cur.items[cur.i];if(!it)return;const
  let t;
  if(it.claim)t=`${speakable(it.q)} Lía dice: ${it.claim}. ¿Tiene razón?`;
  else if(sh.kind==='passage')t=`Lee el texto. ${sh.text.replace(/[.\s]+$/,'')}. ${speakable(sh.ask)} ${opts}`;
+ else if(sh.kind==='gap')t=`${speakable(sh.ask)} ${speakable(sh.a)}... ${speakable(sh.b)} ${opts}`;
  else if(sh.kind==='blank')t=`Completa la frase. ${speakable(sh.stem)}... ${opts}`;
  else t=`${speakable(it.q)} ${it.o?opts:'Escribe tu respuesta.'}`;
  speak(t)};

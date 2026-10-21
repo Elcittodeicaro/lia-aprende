@@ -43,7 +43,7 @@ const NEW_MEDIO={
   ['¿Qué desayuno es más sano?',['leche, fruta y pan','bollos y refresco','chucherías'],0],['¿Qué bebida es la mejor para la sed?',['el agua','un refresco','un batido de chocolate'],0],
   ['Después de jugar y antes de comer…',['nos lavamos las manos','nos vamos a dormir','vemos la tele'],0],
   ['Si estoy enfadado, puedo…',['respirar hondo y contarlo','romper cosas','gritar a todos'],0],
-  ['Cuando nos dan un regalo sentimos…',['alegría','miedo','asco'],0],['¿Cuántas veces al día nos lavamos los dientes?',['después de cada comida','una vez a la semana','nunca'],0]]),
+  ['Cuando nos dan un regalo sentimos…',['alegría','miedo','asco'],0],['¿Cuándo nos lavamos los dientes?',['después de cada comida','una vez a la semana','nunca'],0]]),
  T('La luz y el sonido',['La luz nos permite ver. El Sol es una fuente de luz natural; una bombilla, artificial.','El sonido viaja y lo captamos con los oídos. Puede ser fuerte o débil, agudo o grave.','La sombra aparece cuando un objeto tapa la luz.'],[
   ['¿Qué es una fuente de luz natural?',['el Sol','una linterna','una bombilla'],0],['¿Qué es una fuente de luz artificial?',['una lámpara','el Sol','un relámpago'],0],
   ['La sombra se forma cuando…',['un objeto tapa la luz','llueve mucho','hace frío'],0],['El sonido lo captamos con…',['los oídos','los ojos','la nariz'],0],
