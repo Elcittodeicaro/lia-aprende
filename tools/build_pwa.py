@@ -6,8 +6,8 @@ shutil.rmtree(out, ignore_errors=True)
 os.makedirs(P('lia-app', 'icons'))
 
 head = open(P('part_head.html')).read()
-script = ''.join(open(P(f)).read() for f in ('part_mid.js','part_extra.js','part_gen2.js','part_lengua2.js','part_medio2.js','part_plan.js','q_c1.js','q_c2.js','q_c3.js','q_c4.js','q_c5.js','q_c6.js','part_more.js','part_tail.js'))
-ux = open(P('part_ux.js')).read() + open(P('part_v6.js')).read()
+script = ''.join(open(P(f)).read() for f in ('part_mid.js','part_extra.js','part_gen2.js','part_lengua2.js','part_medio2.js','part_plan.js','q_c1.js','q_c2.js','q_c3.js','q_c4.js','q_c5.js','q_c6.js','part_more.js','part_kids.js','part_tail.js'))
+ux = open(P('part_ux.js')).read() + open(P('part_v6.js')).read() + open(P('part_v7.js')).read()
 pre, body = head.split('<canvas id="fx"', 1)
 body = '<canvas id="fx"' + body
 body = body.rsplit('<script>', 1)[0]

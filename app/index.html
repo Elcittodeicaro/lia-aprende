@@ -1698,6 +1698,67 @@ for(const c in MOREQ)for(const s in MOREQ[c])for(const title in MOREQ[c][s]){con
  if(!t){MORE_ERR.push(`${c} ${s} ${title}`);continue}
  const key=r=>r[0]+'|'+(Array.isArray(r[1])?[...r[1]].sort().join('/'):r[1]);
  const have=new Set(t.q.map(key));MOREQ[c][s][title].forEach(r=>{if(have.has(key(r))){MORE_ERR.push(`dup ${c} ${s} ${title}: ${r[0]}`);return}have.add(key(r));t.q.push(r)})}
+/* ---------- preguntas más claras para niños ---------- */
+/* reemplazos de opciones con doble género: una sola palabra, alternando chico y chica */
+const KID_OPT={'el autor o la autora':'la autora','el director o la directora':'la directora','el médico o la médica':'la médica','el agricultor o la agricultora':'el agricultor',
+ 'el cartero o la cartera':'el cartero','el maestro o la maestra':'la maestra','el panadero o la panadera':'el panadero','el mecánico o la mecánica':'la mecánica',
+ 'el carpintero o la carpintera':'el carpintero','el veterinario o la veterinaria':'la veterinaria','el conductor o la conductora':'el conductor',
+ 'El alcalde o la alcaldesa':'La alcaldesa','el alcalde o la alcaldesa':'la alcaldesa','a la playa o la piscina':'a la playa'};
+/* reescrituras por enunciado (enunciado original → [nuevo enunciado, nuevas opciones (la buena primero), explicación opcional]) */
+const KID_Q={
+ '¿Cómo suelen terminar los cuentos?':['¿Cómo terminan muchos cuentos?',['Y colorín colorado…','Un saludo.','Fin de la receta.']],
+ 'Reciclar es…':['¿Qué es reciclar?',['separar la basura','tirarlo todo junto','quemar la basura']],
+ 'Una contraseña…':['¿A quién le cuentas tu contraseña?',['solo a mi familia','a todo el mundo','a desconocidos']],
+ 'Después de usar la tablet un rato…':['Después de usar la tablet un rato, ¿qué hacemos?',['descansar y jugar fuera','seguir toda la tarde','no dormir']],
+ 'En internet, las personas que no conocemos…':['Alguien que no conoces te habla en internet. ¿Es tu amigo?',['No, es un desconocido','Sí, es mi amigo']],
+ 'Si un amigo está triste, podemos…':['Si un amigo está triste, ¿qué haces?',['le pregunto y le acompaño','me río','no le hago caso']],
+ '¿Qué ayuda a ahorrar agua?':['¿Qué ayuda a ahorrar agua?',['cerrar el grifo','dejar el grifo abierto']],
+ '¿Para qué sirven las máquinas?':['¿Para qué sirven las máquinas?',['para trabajar con menos esfuerzo','para nada','solo para jugar']],
+ 'Los paisajes cambiados por las personas (pueblos, campos) son paisajes…':['Un paisaje con casas y campos que hizo la gente es…',['humanizado','natural']],
+ 'En el parte del tiempo, un dibujo de nube con gotas significa…':['En el mapa del tiempo, una nube con gotas significa…',['lluvia','sol','viento']],
+ '¿Cómo podemos saber cómo era el pueblo antes?':['¿Cómo sabemos cómo era el pueblo antes?',['preguntando a los abuelos','viendo dibujos animados','no se puede saber']],
+ 'Una línea del tiempo sirve para…':['Una línea del tiempo sirve para…',['ordenar lo que pasó','medir distancias','pesar cosas']],
+ 'Una romería es…':['Una romería es…',['una fiesta en el campo','una carrera de coches','un mercado de peces']],
+ 'Si un robot gira a la derecha dos veces seguidas, mira hacia…':['Un robot gira a la derecha dos veces. ¿Hacia dónde mira ahora?',['hacia atrás','hacia delante','hacia arriba']],
+ '«No me gustan las espinacas» es una oración…':['«No me gustan las espinacas». ¿Qué tipo de frase es?',['dice que no (negativa)','dice que sí (afirmativa)','pregunta (interrogativa)']],
+ '«¿Vienes al cine?» es una oración…':['«¿Vienes al cine?». ¿Qué tipo de frase es?',['pregunta (interrogativa)','emoción (exclamativa)','dice que no (negativa)']],
+ '«¡Qué susto!» es una oración…':['«¡Qué susto!». ¿Qué tipo de frase es?',['emoción (exclamativa)','dice que sí (afirmativa)','dice que no (negativa)']],
+ '«Mi casa es grande» es una oración…':['«Mi casa es grande». ¿Qué tipo de frase es?',['dice que sí (afirmativa)','dice que no (negativa)','pregunta (interrogativa)']],
+ '«¡Qué bonito es el mar!» es una oración…':['«¡Qué bonito es el mar!». ¿Qué tipo de frase es?',['emoción (exclamativa)','dice que no (negativa)','pregunta (interrogativa)']],
+ '«Nunca como pescado» es una oración…':['«Nunca como pescado». ¿Qué tipo de frase es?',['dice que no (negativa)','dice que sí (afirmativa)','emoción (exclamativa)']],
+ '«¿Cuántos años tienes?» es una oración…':['«¿Cuántos años tienes?». ¿Qué tipo de frase es?',['pregunta (interrogativa)','dice que sí (afirmativa)','dice que no (negativa)']],
+ '«Hoy es lunes» es una oración…':['«Hoy es lunes». ¿Qué tipo de frase es?',['dice que sí (afirmativa)','dice que no (negativa)','emoción (exclamativa)']],
+ '«Nadie vino a la fiesta» es una oración…':['«Nadie vino a la fiesta». ¿Qué tipo de frase es?',['dice que no (negativa)','dice que sí (afirmativa)','pregunta (interrogativa)']],
+ 'Las oraciones interrogativas llevan…':['Las preguntas se escriben con…',['¿ ?','¡ !','« »']],
+ 'Pasa a afirmativa: «No me gusta el frío» →':['Quita el «no»: «No me gusta el frío» →',['Me gusta el frío.','¿Me gusta el frío?','¡No el frío!']],
+ 'Pasa a exclamativa: «Es muy alto» →':['Dilo con emoción: «Es muy alto» →',['¡Qué alto es!','No es alto.','¿Es alto?']],
+ '«Lucena» es un sustantivo…':['«Lucena» es un nombre…',['propio','común'],'Nombre propio: el de una persona, ciudad o río concreto. Va con mayúscula.'],
+ '«ciudad» es un sustantivo…':['«ciudad» es un nombre…',['común','propio'],'Nombre común: nombra cosas en general.'],
+ '«Guadalquivir» es un sustantivo…':['«Guadalquivir» es un nombre…',['propio','común']],
+ '«orquesta» es un sustantivo…':['«orquesta» nombra a…',['un grupo de músicos (colectivo)','un solo músico (individual)']],
+ '«Andalucía» es un sustantivo…':['«Andalucía» es un nombre…',['propio','común']],
+ '«mesa» es un sustantivo…':['«mesa» es un nombre…',['común','propio']],
+ '¿Qué sustantivo es individual?':['¿Qué palabra nombra a UNA sola persona?',['músico','orquesta','coro']],
+ '¿Cuál es un artículo indeterminado?':['¿Qué palabrita habla de algo que no conocemos todavía? («un perro», no «el perro»)',['una','la','el']],
+ '¿Qué artículo indeterminado va con «niños»?':['¿Qué palabra va bien? «___ niños jugaban»',['unos','unas','la']],
+ 'Las adivinanzas y los trabalenguas son…':['Las adivinanzas y los trabalenguas son…',['juegos con palabras','noticias','recetas']],
+ 'Después de los dos puntos de una carta escribimos…':['En una carta, después de «Querida abuela:» escribimos…',['en la línea de abajo, con mayúscula','en la misma línea, con números','nada']],
+ 'Un ecosistema está formado por…':['Un ecosistema es…',['un lugar y los seres vivos que viven allí','solo los animales']],
+ 'Los descomponedores (hongos, bacterias)…':['Los hongos y las bacterias que comen restos de seres vivos se llaman…',['descomponedores','productores','carnívoros']],
+ 'La escala de un mapa indica…':['La escala de un mapa dice…',['cuánto se ha hecho pequeño el lugar','los colores','el título']],
+ 'La persona que dirige el Ayuntamiento es…':['¿Quién dirige el Ayuntamiento?',['la alcaldesa','el rey','el director del colegio']],
+ 'El Ayuntamiento se encarga de…':['¿De qué se encarga el Ayuntamiento?',['de los parques y la limpieza del pueblo','de la moneda del país','de las leyes de Europa']],
+ 'Una contraseña segura…':['¿Cómo es una contraseña segura?',['mezcla letras y números','es tu nombre','es 1234']],
+ 'Si alguien te hace sentir mal en internet…':['Si alguien te hace sentir mal en internet, ¿qué haces?',['se lo cuento a un adulto','lo guardo en secreto']],
+ 'La persona que dirige una obra de teatro es…':['¿Quién dirige una obra de teatro?',['la directora','el lector','el cartero']]
+};
+/* opciones más claras para todo 1.er ciclo: «Sí»/«No» al principio de frase sin cambios; quitamos «el/la» dobles */
+for(const c in DATA)for(const s of ['lengua','medio'])DATA[c][s].forEach(t=>{
+ t.q=t.q.map(r=>{const k=KID_Q[r[0]];
+  if(k===null)return r;
+  if(k){const nr=[k[0],k[1],0,k[2]||r[3]||''];return nr}
+  if(Array.isArray(r[1])){const o=r[1].map(x=>KID_OPT[x]||x);if(new Set(o).size===o.length)return [r[0],o,r[2],r[3]]}
+  return r})});
 
 /* ---------- Lía, la lince ---------- */
 const DARK='#2B2118',CREAM='#F6E7CF';
@@ -2516,6 +2577,76 @@ document.addEventListener('click',e=>{const b=e.target.closest('button');if(!b)r
 $('sheetBg').onclick=closeSheets;
 document.addEventListener('keydown',e=>{if(e.key==='Escape')closeSheets()});
 renderHome();show(me().ok?'vHome':'vWelcome');
+</script>
+<style>
+/* v7 · preguntas más claras para niños */
+.passage{background:var(--sheet);border:2px solid var(--line);border-radius:18px;padding:12px 14px;margin:6px 0 10px;font-family:var(--body);font-weight:400;font-size:1.15rem;line-height:1.45}
+.passage small,.qhint{display:block;font-family:var(--body);font-size:.72rem;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);margin-bottom:4px}
+.blank{display:inline-block;min-width:4.5em;border-bottom:3px solid var(--mates);color:var(--mates);padding:0 4px;margin-left:2px;text-align:center}
+.blank.filled{border-bottom-style:solid;background:color-mix(in srgb,var(--mates) 10%,transparent);border-radius:6px 6px 0 0}
+.liasays{display:flex;gap:10px;align-items:center;margin:4px 0 12px}
+.liasays .mascot{width:54px;flex:none}
+.liasays .say{position:relative;background:var(--sheet);border:2px solid var(--line);border-radius:16px;padding:8px 12px;font-family:var(--display);font-weight:700;font-size:1.15rem}
+.liasays .say small{display:block;font-family:var(--body);font-size:.75rem;color:var(--muted);font-weight:700}
+body[data-young] .qrow .question{font-size:1.6rem;line-height:1.3}
+body[data-young] .opt{font-size:1.25rem;padding:16px}
+body[data-young] .passage{font-size:1.3rem}
+.voicewarn{background:color-mix(in srgb,var(--star) 18%,var(--sheet));border:1.5px solid var(--star);border-radius:12px;padding:10px 12px;margin-top:10px;font-weight:700}
+</style>
+<script>
+/* ---------- v7: preguntas claras y mejor voz ---------- */
+const young=()=>me().course<=2;
+/* «¿Tiene razón Lía?» en lugar de «Respuesta propuesta…» (no en 1.º y 2.º) */
+trueFalse=function(it){if(young())return it;const right=it.o[it.a];const wrongs=it.o.filter((_,i)=>i!==it.a);const shownOpt=Math.random()<.5||!wrongs.length?right:pick(wrongs);
+ return {q:it.q,claim:shownOpt,q0:it.q,k:qkey(it),o:['Sí, tiene razón','No, se equivoca'],a:shownOpt===right?0:1,e:`${it.e?it.e+' ':''}La respuesta correcta es «${right}».`}};
+/* «Sí» siempre antes que «No» */
+const _bs7=buildSession;buildSession=function(t){return _bs7(t).map(it=>{if(it.claim&&it.o[0]!=='Sí, tiene razón'){it.o=['Sí, tiene razón','No, se equivoca'];it.a=1-it.a}return it})};
+/* forma de cada pregunta: lectura, frase para completar o normal */
+function qShape(it){const m=it.q.match(/^«([^»]{12,})»\s*(¿.+)$/);if(m)return {kind:'passage',text:m[1],ask:m[2]};
+ if(/…\s*$/.test(it.q)&&!it.claim)return {kind:'blank',stem:it.q.replace(/\s*…\s*$/,'')};return {kind:'plain'}}
+const _rq7=renderQ;
+renderQ=function(){_rq7();const it=cur.items[cur.i];if(!it)return;document.body.toggleAttribute('data-young',young());
+ const sh=qShape(it),q=$('qText');
+ if(sh.kind==='passage')q.innerHTML=`<div class="passage"><small>Lee el texto</small>${esc(sh.text)}</div>${esc(sh.ask)}`;
+ else if(sh.kind==='blank')q.innerHTML=`<span class="qhint">Completa la frase</span>${esc(sh.stem)} <span class="blank" id="qBlank">&nbsp;</span>`;
+ $('qMascot').hidden=!!it.claim;
+ if(it.claim){
+  q.innerHTML=`${esc(it.q)}<div class="liasays"><div class="mascot">${lince(me().g.wear,'ok')}</div><div class="say"><small>Lía dice:</small>«${esc(it.claim)}»</div></div><span class="qhint">¿Tiene razón Lía?</span>`}};
+document.addEventListener('click',e=>{const b=e.target.closest('.opt');const bl=$('qBlank');if(!b||!bl||$('vQuiz').hidden||!cur||cur.locked)return;
+ bl.textContent=b.textContent;bl.classList.add('filled')},true);
+/* lectura en voz alta adaptada */
+readQuestion=function(){const it=cur.items&&cur.items[cur.i];if(!it)return;const sh=qShape(it);
+ const opts=it.o?(it.o.length>1?it.o.slice(0,-1).join(', ')+' o '+it.o[it.o.length-1]:it.o[0]):'';
+ let t;
+ if(it.claim)t=`${speakable(it.q)} Lía dice: ${it.claim}. ¿Tiene razón?`;
+ else if(sh.kind==='passage')t=`Lee el texto. ${sh.text.replace(/[.\s]+$/,'')}. ${speakable(sh.ask)} ${opts}`;
+ else if(sh.kind==='blank')t=`Completa la frase. ${speakable(sh.stem)}... ${opts}`;
+ else t=`${speakable(it.q)} ${it.o?opts:'Escribe tu respuesta.'}`;
+ speak(t)};
+/* voz: distinguir la voz básica de la mejorada aunque se llamen igual (iOS) */
+const vq=v=>{const u=(v.voiceURI||'')+' '+(v.name||'');return /premium/i.test(u)?2:/enhanced|mejorad|neural|natural|siri/i.test(u)?1:0};
+voiceScore=function(v){const n=v.name||'',u=v.voiceURI||'',l=(v.lang||'').replace('_','-');
+ if(!/^es/i.test(l))return -1;if(NOVELTY.test(n)||/eloquence|eddy|flo|grandma|grandpa|reed|rocko|sandy|shelley/i.test(u))return 0;
+ let s=10;if(/^es-ES/i.test(l))s+=6;else if(/^es-(MX|US)/i.test(l))s+=3;s+=[0,25,40][vq(v)];if(/compact/i.test(u))s-=4;
+ if(/m[oó]nica|marisol|paulina|elvira|helena|luc[ií]a|carmen|ximena|sof[ií]a/i.test(n))s+=6;if(/google/i.test(n))s+=8;return s};
+renderVoices=function(){const box=$('voiceBox');if(!box)return;if(!TTS){box.hidden=true;return}
+ const vs=esVoices();box.hidden=false;const curN=ttsVoice&&ttsVoice.voiceURI;
+ if(!vs.length){$('voiceList').innerHTML='<p>Este dispositivo no tiene voces en español. Sigue los pasos de abajo para descargar una.</p>';return}
+ $('voiceList').innerHTML=vs.slice(0,8).map(v=>{const g=vq(v);
+  return `<div class="vitem${v.voiceURI===curN?' on':''}"><label><input type="radio" name="voice" value="${esc(v.name)}" data-uri="${esc(v.voiceURI||'')}" ${v.voiceURI===curN?'checked':''}><span>${esc(v.name.replace(/\s*\(.*\)\s*$/,''))} <small>${esc(v.lang)}</small></span>${g?`<span class="vbadge">${g===2?'Premium':'Mejorada'}</span>`:''}</label><button class="btn" data-tryvoice="${esc(v.name)}" data-uri="${esc(v.voiceURI||'')}">Probar</button></div>`}).join('')+
+  (ttsVoice&&!vq(ttsVoice)?'<div class="voicewarn">Ahora se usa una voz básica y suena robótica. Descarga una voz mejorada con los pasos de abajo: tarda un par de minutos y se nota mucho.</div>':'');
+ $('voiceRate').value=store.voiceRate||.9;$('voiceRateVal').textContent=`${Math.round((store.voiceRate||.9)*100)} %`;
+ const det=box.querySelector('.vhelp');if(det&&ttsVoice&&!vq(ttsVoice))det.open=true};
+pickVoice=function(){if(!TTS)return;const vs=esVoices();const want=store.voiceURI,wantN=store.voiceName;
+ ttsVoice=(want&&vs.find(v=>v.voiceURI===want))||(wantN&&vs.find(v=>v.name===wantN&&vq(v)))||vs[0]||null;if(!$('vPeople').hidden)renderVoices()};
+tryVoice=function(name,uri){const v=esVoices().find(x=>uri?x.voiceURI===uri:x.name===name);if(!v)return;const keep=ttsVoice;ttsVoice=v;speak('¡Hola! Soy Lía. ¿Jugamos a aprender?');ttsVoice=keep};
+document.addEventListener('change',e=>{if(e.target.name==='voice'){e.stopPropagation();store.voiceURI=e.target.dataset.uri||'';store.voiceName=e.target.value;save();pickVoice();renderVoices();tryVoice(e.target.value,store.voiceURI)}},true);
+document.addEventListener('click',e=>{const b=e.target.closest('[data-tryvoice]');if(b&&b.dataset.uri){e.stopImmediatePropagation();tryVoice(b.dataset.tryvoice,b.dataset.uri)}},true);
+if(TTS){try{speechSynthesis.addEventListener('voiceschanged',pickVoice)}catch(e){}pickVoice()}
+/* aviso suave la primera vez que suena una voz básica */
+let voiceTipShown=false;const _speak7=speak;
+speak=function(t){_speak7(t);if(!voiceTipShown&&ttsVoice&&!vq(ttsVoice)&&!$('vQuiz').hidden){voiceTipShown=true;setTimeout(()=>toast('¿La voz suena robótica? En Perfil → «La voz de Lía» te explicamos cómo mejorarla.'),1500)}};
+renderHome();
 </script>
 <script>
 if('serviceWorker' in navigator){addEventListener('load',()=>navigator.serviceWorker.register('sw.js').catch(()=>{}))}
